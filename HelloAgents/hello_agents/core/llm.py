@@ -6,7 +6,7 @@ from typing import List,Dict
 
 load_dotenv()
 
-class HelloAgentsLLM:
+class HelloAgents:
     def __init__(self, model: str = None, apiKey: str = None, baseUrl: str = None, timeout: int = None):
         """
         初始化
@@ -51,11 +51,25 @@ class HelloAgentsLLM:
             print(f"调用LLM API时发生错误: {e}")
             return None
 
+    def invoke(self, messages: List[Dict[str, str]], **kwargs) -> str:
+        return self.think(messages, **kwargs) or ""
+
+    def stream_invoke(self, messages: List[Dict[str, str]], **kwargs):
+        response = self.invoke(messages, **kwargs)
+        for chunk in response:
+            yield chunk
+
+
+class HelloAgentsLLM(HelloAgents):
+    pass
+
+
+
 
 
 if __name__ == '__main__':
     try:
-        llmClient = HelloAgentsLLM()
+        llmClient = HelloAgents()
 
         exampleMessages = [
             {"role": "system", "content": "You are a helpful assistant that writes Python code."},
